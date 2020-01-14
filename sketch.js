@@ -1,108 +1,68 @@
-/*
-function preload(){
-  // put preload code here
-}
-
-function setup() {
-  // put setup code here
-}
-
-function draw() {
-  // put drawing code here
-}
-*/
-
-var myLoc;
+let myImage;
 var myMap;
 var canvas;
-
-var mappa = new Mappa('Leaflet');
-
-//
-var tesoroLat = 4.6486259;
-var tesoroLng = -74.2478936;
-
-//
-options = {
+var key = "pk.eyJ1IjoiYW5mbCIsImEiOiJjazJuMXQzdGYwaW12M2JuenpiYjFha2FjIn0.96lS6KE5xgkDatYk7N-XgA";
+var mappa = new Mappa("MapboxGL", key);
+var homeLat = -37.9701542;
+var homeLon = 146.8739643;
+var meLat = 45.5048151;
+var meLon = 9.1629839;
+var options = {
   lat: 0,
   lng: 0,
-  zoom: 6,
-  style: "http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+  zoom: 2,
+  style: "mapbox://styles/mapbox/dark-v9"
 }
 
-var tesoro = {
-	lat: tesoroLat,
-	lng: tesoroLng,
-	name: 'PuroBogota',
+
+
+
+
+function preload() {
+  myImage = loadImage("cover.png");
+  myImage2 = loadImage("myself.png");
 }
 
-function preload(){
-  myLoc = getCurrentPosition();
-}
 
 
 function setup() {
-
   canvas = createCanvas(windowWidth, windowHeight);
-
-  options.lat = myLoc.latitude;
-  options.lng = myLoc.longitude;
-
   myMap = mappa.tileMap(options);
   myMap.overlay(canvas);
-
-
-
-
 }
+
 
 
 function draw() {
-
   clear();
-  //
-  var calcTesoro = calcGeoDistance(myLoc.latitude, myLoc.longitude, tesoroLat, tesoroLng, "km");
-  fill(255);
-  textSize(14);
-  var pointtesoro = myMap.latLngToPixel(tesoroLat, tesoroLng);
 
-  //
+  var melbourne = myMap.latLngToPixel(homeLat, homeLon);
+  var me = myMap.latLngToPixel(meLat, meLon);
+
+  //Line
+  line(melbourne.x, melbourne.y, me.x, me.y);
+
+  //new location
+  ellipse(melbourne.x, melbourne.y, 5);
+  image(myImage, melbourne.x, melbourne.y, myImage.width = 50, myImage.height = 50);
+
+  //actual location
+  image(myImage2, me.x, me.y, myImage2.width = 50, myImage2.height = 50);
+  ellipse(me.x, me.y, 5);
+  stroke("red");
+  strokeWeight(2);
+
+  //title definitions
+  push();
+  var myText = "Gonna save Australia and koalas!";
+  textFont("IMFellDoublePica-Italic.ttf");
+  textSize(120);
+  fill('red');
   noStroke();
-  fill(255,0,0);
-  strokeWeight(4);
-  textSize(30);
-  text('YOU ARE ' + Math.round(calcTesoro) + 'KM AWAY FROM THE TRESURE' , 50, 50);
-
-  //
-  noStroke();
-  fill(0,0,255);
-  strokeWeight(4);
-  textSize(20);
-  text('You have to find the tresure. it is located in a city that gives the name to one of best Club Dogo track' , 50, 100);
-
-
-  //
-  fill(255);
-  stroke(40);
-  textSize(40);
-  var pointHere = myMap.latLngToPixel(myLoc.latitude, myLoc.longitude);
+  textAlign(CENTER);
+  text(myText, 200, 100);
+  pop();
 
 
 
-
-  //
-  noStroke();
-  fill(0,255,0);
-  ellipse(pointHere.x, pointHere.y, 20);
-  if(mouseX==pointtesoro.x){
-  fill(255,0,0);
-  ellipse(pointtesoro.x, pointtesoro.y, 20);
-  }
-  fill(0,0,255);
-  text('YOU', pointHere.x -35, pointHere.y-15);
-
-}
-
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
 }
